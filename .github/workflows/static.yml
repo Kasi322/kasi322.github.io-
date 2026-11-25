@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Сетевая лаборатория — MAC, ARP и порты</title>
+<style>
+:root{--paper:#f4f6f3;--ink:#132925;--muted:#47615b;--green:#006d55;--lime:#dbfa82;--line:#cddbd2;--dark:#102b25;--white:#fff;--blue:#dcecff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "Inter","Segoe UI",sans-serif}a{color:inherit}a:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #b07218;outline-offset:4px}.wrap{width:min(1180px,calc(100% - 48px));margin:auto}
+header{background:var(--dark);color:white}nav{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #45625a;padding:19px 0}nav strong{display:flex;align-items:center;gap:12px}.brand{display:grid;place-items:center;width:35px;height:35px;border-radius:10px;background:var(--lime);color:var(--dark);font-size:22px}.links{display:flex;gap:20px;flex-wrap:wrap}.links a{text-decoration:none;color:#ddede2}.links a:hover{text-decoration:underline}.hero{display:grid;grid-template-columns:1.13fr 1fr;gap:44px;align-items:center;padding:66px 0 72px}.eyebrow{font-size:.77rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--green)}.hero .eyebrow{color:var(--lime)}h1,h2,h3,p{margin-top:0}h1{font-size:clamp(2.8rem,6vw,5.5rem);letter-spacing:-.065em;line-height:.99;margin:14px 0 24px}h2{font-size:clamp(2rem,4.7vw,3.45rem);letter-spacing:-.045em;line-height:1.04;margin:8px 0 14px}h3{font-size:1.25rem;line-height:1.25;margin-bottom:12px}.hero p{color:#cfdfd6;max-width:45ch;font-size:1.08rem}.btn,button{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:10px 16px;background:var(--green);color:white;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}.hero .btn{background:var(--lime);color:var(--dark);margin-top:8px}.btn:hover,button:hover{filter:brightness(.91)}button.secondary{background:white;color:var(--ink);border-color:var(--line)}button:disabled{opacity:.5;cursor:default}
+.stack{padding:24px;border:1px solid #55746b;border-radius:24px;background:radial-gradient(#537468 1px,transparent 1px) 0 0/16px 16px,#173b32}.stack>strong{display:block;margin-bottom:12px}.layer{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px 15px;margin:8px 0;border-radius:10px;color:var(--dark);background:#c7e8d7;font-weight:700}.layer .layer{display:none}.layer.ip{background:var(--blue);margin-left:17px}.layer.port{background:var(--lime);margin-left:34px}.stack small{display:block;color:#d7eae0;margin-top:12px}code,.mono{font-family:"Cascadia Code",Consolas,monospace;font-size:.92em;overflow-wrap:anywhere}
+main section{padding:56px 0;border-bottom:1px solid var(--line);scroll-margin-top:14px}.intro{color:var(--muted);max-width:67ch;margin-bottom:24px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card,.lab,details{border:1px solid var(--line);border-radius:18px;background:white;padding:20px}.card p:last-child,.lab p:last-child,details p:last-child{margin-bottom:0}.tag{display:inline-block;background:#dff4e8;color:#165341;border-radius:8px;padding:4px 9px;font-weight:700;font-size:.78rem;margin-bottom:14px}.bytes{display:flex;flex-wrap:wrap;gap:4px;margin:13px 0}.bytes span{padding:4px 6px;border-radius:5px;background:#e5f4ed}.bytes span:nth-child(n+4){background:var(--blue)}.flow{padding:8px 10px;border-radius:8px;background:#edf5f2;margin:6px 0;color:var(--green);font-weight:700}.port-table,.cache-table{width:100%;border-collapse:collapse;text-align:left;font-size:.94rem}th,td{padding:8px 7px;border-bottom:1px solid var(--line);text-align:left}caption{text-align:left;font-weight:800;margin-bottom:8px}
+.lab{padding:24px;margin-bottom:16px}.toolbar{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:14px 0}.toolbar label{display:grid;gap:3px;font-weight:700}.toolbar select{max-width:100%;width:100%;font:inherit;padding:9px;border:1px solid #849c90;border-radius:8px;background:white;color:var(--ink)}.network{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px;background:#eaf1ec;border-radius:14px}.node{min-width:0;background:white;border:2px solid transparent;padding:9px;border-radius:10px}.node.active{border-color:#007959;background:#e0f5e7}.node strong,.node code,.node small{display:block}.node small{color:#345e51;min-height:1.6em}.packet{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:8px;margin:12px 0}.packet div{background:#eff5f2;border-radius:10px;padding:9px;overflow-wrap:anywhere}.packet b{display:block;font-size:.81rem}.status{padding:12px;background:#eaf5d6;border-radius:10px;min-height:48px;margin:12px 0}.lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.log{margin:0;padding-left:24px}.log li{margin-bottom:6px}.scroll{overflow:auto}.address-output{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.address-output div{background:#edf5f2;padding:10px;border-radius:10px}.address-output b{display:block}.address-output code{display:block}
+details{margin-bottom:10px}summary{font-weight:800;cursor:pointer}details[open]>summary{margin-bottom:12px}.cmd{display:block;background:var(--dark);color:#eefbf3;border-radius:10px;padding:10px 14px;white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0}.quiz{display:grid;gap:12px}fieldset{min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 14px}legend{font-weight:700}fieldset label{display:block;padding:3px 0}input{accent-color:var(--green)}.feedback{font-weight:700;color:#135b41}.feedback.error{color:#8b3820}footer{padding:22px 0;color:var(--muted)}.skip{position:absolute;left:8px;top:-100px;background:white;padding:8px}.skip:focus{top:8px}
+@media(max-width:800px){.hero{grid-template-columns:1fr;gap:26px;padding:40px 0}.grid{grid-template-columns:1fr}.network{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.wrap{width:calc(100% - 28px)}nav{align-items:flex-start;flex-direction:column;gap:10px}.links{gap:12px;font-size:.9rem}.lab,.card,details{padding:14px}.packet,.lab-grid,.address-output{grid-template-columns:1fr}.layer{flex-wrap:wrap}.stack{padding:13px}.stack .port,.stack .ip{margin-left:0}main section{padding:42px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#theory">Перейти к материалу</a>
+<header><div class="wrap">
+<nav aria-label="Разделы сайта"><strong><span class="brand" aria-hidden="true">⌘</span> Сетевая лаборатория</strong><div class="links"><a href="#theory">Теория</a><a href="#sim">Симуляции</a><a href="#practice">Практика</a><a href="#quiz">Самопроверка</a></div></nav>
+<div class="hero"><div><div class="eyebrow">Обслуживание ПК · локальные сети</div><h1>MAC, ARP<br>и сетевые порты</h1><p>Проследите путь кадра от компьютера к соседу или шлюзу. Затем выясните, как ОС доставляет данные нужной службе.</p><a class="btn" href="#sim">Открыть симуляции <span aria-hidden="true">↓</span></a></div>
+<div class="stack"><strong>Поля назначения при обращении к службе</strong><div class="layer"><span>Ethernet · MAC</span><code>02:00:00:00:00:01</code></div><div class="layer ip"><span>IPv4 · узел</span><code>203.0.113.10</code></div><div class="layer port"><span>Служба · порт</span><code>443 / TCP</code></div><small>Пример первого перехода к удалённому HTTPS-серверу через шлюз.</small></div></div>
+</div></header>
+<main class="wrap">
+<section id="theory"><div class="eyebrow">Теория</div><h2>Как данные находят получателя</h2><p class="intro">IP указывает конечный узел, MAC доставляет кадр на текущем Ethernet-участке, а порт помогает операционной системе определить нужную службу или соединение.</p>
+<div class="grid">
+<article class="card"><span class="tag">Канальный уровень</span><h3>MAC-адрес</h3><p>MAC — адрес сетевого интерфейса в локальном сегменте. Коммутатор учится сопоставлять MAC источника со своим физическим портом и использует таблицу при пересылке кадров.</p><div class="bytes mono" aria-label="Пример MAC-адреса 64-6C-80-36-0B-27"><span>64</span><span>6C</span><span>80</span><span>36</span><span>0B</span><span>27</span></div><p>Обычный Ethernet-адрес содержит 6 байт, или 48 бит. У глобально назначенных адресов первые три байта часто представляют OUI организации. Локально назначенные адреса могут иметь другой смысл префикса.</p></article>
+<article class="card"><span class="tag">Сопоставление IPv4 и MAC</span><h3>ARP</h3><p>Чтобы сформировать Ethernet-кадр, компьютер ищет MAC следующего узла по его IPv4-адресу. Сначала он проверяет ARP-кэш.</p><div class="flow">Request → всем в сегменте</div><div class="flow">Reply → отправителю запроса</div><p>Адрес назначения запроса — <code>FF:FF:FF:FF:FF:FF</code>. В обычном сценарии узел с искомым IPv4 отвечает своему соседу, и тот сохраняет пару IPv4 ↔ MAC в кэше.</p></article>
+<article class="card"><span class="tag">Транспортный уровень</span><h3>Сетевой порт</h3><p>Порт — число от 0 до 65535. В сетевой записи <code>203.0.113.10:443</code> после двоеточия указан порт. Пространства портов TCP и UDP независимы.</p><table class="port-table"><caption>Типичные службы</caption><thead><tr><th>Служба</th><th>Порт / протокол</th></tr></thead><tbody><tr><td>HTTP / HTTPS</td><td>80 / TCP, 443 / TCP</td></tr><tr><td>DNS</td><td>53 / UDP или TCP</td></tr><tr><td>SSH</td><td>22 / TCP</td></tr><tr><td>RDP</td><td>3389 / TCP и UDP</td></tr></tbody></table></article>
+</div>
+<details style="margin-top:16px"><summary>Диапазоны портов и две разные таблицы адресов</summary><p>Диапазоны IANA: системные 0–1023 (0 зарезервирован), пользовательские 1024–49151, динамические и частные 49152–65535. Операционная система выделяет временные клиентские порты из своего настроенного диапазона.</p><p><strong>ARP-кэш компьютера:</strong> IPv4 → MAC. <strong>MAC-таблица коммутатора:</strong> MAC → физический порт в пределах VLAN. Число 443 обозначает транспортный порт службы.</p></details>
+</section>
+<section id="sim"><div class="eyebrow">Симуляции</div><h2>Проследите путь данных</h2><p class="intro">Выберите получателя и нажимайте «Следующий шаг». После первой отправки повторите её с заполненным кэшем.</p>
+<article class="lab"><h3>ARP и первый переход</h3><p>Учебная сеть <code>192.168.113.0/24</code>. ПК A отправляет ICMP Echo Request. У ICMP нет транспортных портов.</p>
+<div class="toolbar"><label for="target">Получатель<select id="target"><option value="local">ПК B · 192.168.113.184</option><option value="remote">Удалённый сервер · 203.0.113.10</option><option value="absent">Узел без ответа · 192.168.113.99</option></select></label><button id="next">Следующий шаг</button><button id="again" class="secondary" disabled>Новая отправка</button><button id="clear" class="secondary">Очистить кэш</button></div>
+<div class="network" aria-label="Учебная топология"><div class="node" id="node-a"><strong>ПК A</strong><code>192.168.113.10</code><code>02:00:00:00:00:0A</code><small></small></div><div class="node" id="node-switch"><strong>Коммутатор</strong><code>Сегмент LAN</code><small></small></div><div class="node" id="node-b"><strong>ПК B</strong><code>192.168.113.184</code><code>02:00:00:00:00:0B</code><small></small></div><div class="node" id="node-g"><strong>Шлюз</strong><code>192.168.113.1</code><code>02:00:00:00:00:01</code><small></small></div></div>
+<div class="packet"><div><b>Событие</b><span id="event">Ожидание</span></div><div><b>Целевой IPv4</b><code id="packet-ip">—</code></div><div><b>MAC назначения кадра</b><code id="packet-mac">—</code></div></div>
+<p class="status" id="arp-status" role="status">Начните с определения следующего узла.</p>
+<div class="lab-grid"><div class="scroll"><table class="cache-table"><caption>ARP-кэш ПК A</caption><thead><tr><th>IPv4</th><th>MAC</th><th>Тип</th></tr></thead><tbody id="cache"></tbody></table></div><div><h3>Журнал событий</h3><ol id="log" class="log"></ol></div></div>
+</article>
+<article class="lab"><h3>Адреса и порты службы</h3><p>Выберите сценарий. Сравните поля исходящих данных и ответа. Клиентский порт <code>53124</code> выбран для примера.</p><div class="toolbar"><label for="service">Служба<select id="service"><option value="https">HTTPS · 443 / TCP</option><option value="dns">DNS · 53 / UDP</option><option value="ssh">SSH · 22 / TCP</option></select></label><button id="reply" class="secondary" aria-pressed="false">Показать ответ</button></div>
+<div class="address-output" aria-live="polite"><div><b>Источник</b><code id="from">192.168.113.10:53124</code></div><div><b>Назначение</b><code id="to">203.0.113.10:443</code></div><div><b>Транспорт</b><code id="protocol">TCP</code></div></div><p class="status" id="service-note">Запрос идёт на порт HTTPS-службы.</p>
+</article></section>
+<section id="practice"><div class="eyebrow">Практика на Windows</div><h2>Исследуйте свою сеть</h2><p class="intro">Работайте в учебной сети и используйте адреса, которые выдал преподаватель. Для каждого шага запишите наблюдение и объясните результат.</p>
+<details open><summary>Шаг 1. Найдите MAC, IPv4 и шлюз активного адаптера</summary><code class="cmd">getmac /v
+ipconfig /all</code><p>Выберите активный адаптер Ethernet или Wi‑Fi. Запишите название, физический адрес, IPv4, маску и основной шлюз. Сопоставьте оба вывода по MAC.</p></details>
+<details><summary>Шаг 2. Прочитайте ARP-таблицу</summary><code class="cmd">arp -a</code><p>Найдите блок своего интерфейса. Выпишите пять строк при наличии, укажите IPv4, MAC и тип. Если строк меньше, запишите все и отметьте их количество. Найдите шлюз при наличии записи и объясните разницу между <code>dynamic</code> и <code>static</code>. Определите назначение <code>FF-FF-FF-FF-FF-FF</code>.</p></details>
+<details><summary>Шаг 3. Сравните кэш до и после ping</summary><code class="cmd">arp -a
+ping &lt;IPv4 разрешённого ПК&gt;
+arp -a</code><p>Замените текст в угловых скобках на адрес соседа из вашей подсети. Сравните строку искомого IPv4 до и после команды. Нарисуйте ARP Request и ARP Reply с адресами назначения. Если запись уже была, объясните, как такой кэш меняет обмен. Тайм-аут ping возможен даже при успешном ARP, например если узел фильтрует ICMP.</p></details>
+<details><summary>Шаг 4. Определите, какой процесс использует порт</summary><code class="cmd">netstat -an
+netstat -ano
+tasklist /FI "PID eq 1234"</code><p>Выпишите пять строк TCP при наличии. Для каждой укажите локальный адрес и порт, удалённый адрес и порт, состояние и PID. Объясните, как отличить локальный порт от удалённого. Подставьте реальный PID вместо <code>1234</code>. Для <code>LISTENING</code> объясните, что процесс ожидает подключения. Для <code>ESTABLISHED</code> определите оба конца установленного соединения.</p></details>
+<details><summary>Шаг 5. Сравните подключения до и после открытия сайта</summary><p>Сохраните вывод <code>netstat -ano</code> или откройте TCPView, если он установлен. Откройте учебный HTTPS-сайт и снова посмотрите подключения. Сопоставьте строки с процессом браузера по PID. Если новой строки нет, запишите наблюдение и предложите объяснение, например повторное использование уже открытого соединения. По таблице теории заполните соответствия для портов 22, 53, 80, 443 и 3389.</p></details>
+<details><summary>Шаг 6. Проверьте доступность портов 80 и 443</summary><code class="cmd">Test-NetConnection -ComputerName &lt;учебный сервер&gt; -Port 80
+Test-NetConnection -ComputerName &lt;учебный сервер&gt; -Port 443</code><p>В PowerShell подставьте имя или адрес учебного сервера. Для каждой проверки запишите <code>RemoteAddress</code>, <code>RemotePort</code> и <code>TcpTestSucceeded</code>. Если проверка не прошла, предложите две возможные причины и укажите, какие данные нужны, чтобы их различить. Успешный результат подтверждает возможность TCP-подключения к выбранному порту.</p></details>
+<details><summary>Сложный сценарий. Узел отвечает на ARP, но служба недоступна</summary><p>Учебный ПК в вашей подсети появился в <code>arp -a</code>. Проверка служебного порта вернула <code>False</code>. Объясните, что уже известно о локальной связи. Укажите, как на сервере отличить отсутствие слушающего процесса от фильтрации трафика, используя состояние порта и настройки межсетевого экрана. Затем в симуляции выберите удалённый сервер и запишите отдельно IPv4 получателя и MAC первого перехода.</p></details>
+<p class="status"><strong>Сдача работы.</strong> Подготовьте <code>Группа_Фамилия_ARP.pdf</code>. Включите выводы команд или снимки экрана, таблицу ARP до и после <code>ping</code>, схему Request/Reply, найденные PID и вывод по каждому шагу.</p></section>
+<section id="quiz"><div class="eyebrow">Самопроверка</div><h2>Проверьте себя</h2><p class="intro">Ответьте на четыре вопроса. После проверки под каждым вопросом появится объяснение.</p>
+<form id="quiz-form" class="quiz">
+<fieldset data-answer="b" data-explain="ПК A запрашивает MAC шлюза, потому что первый Ethernet-кадр передаётся шлюзу в локальной сети."><legend>1. Какой MAC ищет ПК для удалённого IPv4?</legend><label><input type="radio" name="q1" value="a"> MAC удалённого сервера</label><label><input type="radio" name="q1" value="b"> MAC локального интерфейса шлюза</label><p class="feedback"></p></fieldset>
+<fieldset data-answer="a" data-explain="При пустом кэше Ethernet-кадр ARP Request обычно адресуется всем устройствам локального сегмента."><legend>2. Кому адресован обычный ARP Request?</legend><label><input type="radio" name="q2" value="a"> FF:FF:FF:FF:FF:FF</label><label><input type="radio" name="q2" value="b"> MAC запрашивающего ПК</label><p class="feedback"></p></fieldset>
+<fieldset data-answer="b" data-explain="Клиент отправил запрос с порта 53124 на 443. При ответе исходным портом становится 443, а портом назначения — 53124."><legend>3. Какой порт назначения у ответа HTTPS-сервера клиенту с портом 53124?</legend><label><input type="radio" name="q3" value="a"> 443</label><label><input type="radio" name="q3" value="b"> 53124</label><p class="feedback"></p></fieldset>
+<fieldset data-answer="a" data-explain="ARP-кэш хранит пары IPv4 и MAC. Причину недоступности отдельно проверяют на уровне службы и связи с её портом."><legend>4. Что показывает запись для соседа в ARP-кэше?</legend><label><input type="radio" name="q4" value="a"> Известно соответствие IPv4 и MAC</label><label><input type="radio" name="q4" value="b"> HTTPS-сервер доступен</label><p class="feedback"></p></fieldset>
+<div class="toolbar"><button type="submit">Проверить ответы</button><button type="reset" class="secondary">Сбросить ответы</button></div><p id="score" role="status"></p>
+</form></section></main>
+<footer class="wrap">Сетевая лаборатория · учебный материал для занятия по обслуживанию ПК</footer>
+<noscript><p class="wrap">Для работы симуляций и самопроверки включите JavaScript в браузере.</p></noscript>
+<script>
+const byId = (id) => document.getElementById(id);
+const scenarios = {
+  local: { ip: "192.168.113.184", hop: "192.168.113.184", mac: "02:00:00:00:00:0B", node: "b", route: "ПК B находится в той же подсети. ПК A ищет MAC самого ПК B." },
+  remote: { ip: "203.0.113.10", hop: "192.168.113.1", mac: "02:00:00:00:00:01", node: "g", route: "Адрес сервера находится вне подсети. ПК A выбирает шлюз 192.168.113.1 как следующий узел." },
+  absent: { ip: "192.168.113.99", hop: "192.168.113.99", mac: null, route: "Искомый IPv4 находится в локальной подсети. ПК A пытается узнать MAC этого узла." }
+};
+const cache = new Map();
+const nodes = ["a", "switch", "b", "g"];
+let steps = [];
+let index = 0;
+
+function showNodes(labels = {}) {
+  for (const node of nodes) {
+    const element = byId("node-" + node);
+    element.classList.toggle("active", Boolean(labels[node]));
+    element.querySelector("small").textContent = labels[node] || "";
+  }
+}
+
+function showCache() {
+  const body = byId("cache");
+  body.replaceChildren();
+  if (!cache.size) {
+    const cell = body.insertRow().insertCell();
+    cell.colSpan = 3;
+    cell.textContent = "Кэш пуст";
+  }
+  for (const [ip, mac] of cache) {
+    const row = body.insertRow();
+    for (const value of [ip, mac, "dynamic"]) row.insertCell().textContent = value;
+  }
+}
+
+function buildSteps(target) {
+  const {ip, hop, mac, node, route} = target;
+  const steps = [{ title: "Выбор следующего узла", ip, note: route, labels: { a: "Выбор маршрута" } }];
+  if (cache.has(hop)) {
+    steps.push({ title: "Попадание в ARP-кэш", ip: hop, mac: cache.get(hop), note: "ПК A берёт MAC из кэша и сразу может сформировать кадр.", labels: { a: "Читает кэш" } });
+  } else {
+    steps.push({
+      title: "ARP Request · broadcast", ip: hop, mac: "FF:FF:FF:FF:FF:FF",
+      note: "ПК A спрашивает, кому принадлежит " + hop + ". Коммутатор пересылает запрос остальным участникам сегмента.",
+      labels: { a: "Отправляет запрос", switch: "Рассылает", b: "Получает запрос", g: "Получает запрос" }
+    });
+    if (!mac) {
+      steps.push({ title: "Тайм-аут ARP", ip: hop, note: "Ответа нет. После попыток разрешения адреса ПК A не может отправить ICMP-кадр этому получателю. Кэш не пополняется.", labels: { a: "Ожидает ответ" } });
+      return steps;
+    }
+    steps.push({
+      title: "ARP Reply · unicast", ip: "192.168.113.10", mac: "02:00:00:00:00:0A",
+      note: "Владелец " + hop + " сообщает свой MAC " + mac + ". ПК A сохраняет пару в ARP-кэше.",
+      labels: { [node]: "Отправляет ответ", switch: "Пересылает", a: "Обновляет кэш" },
+      learn: [hop, mac]
+    });
+  }
+  steps.push({
+    title: "Кадр с ICMP Echo Request", ip, mac,
+    note: node === "b"
+      ? "Коммутатор доставляет кадр на ПК B. IPv4 и MAC назначения принадлежат его интерфейсу."
+      : "Кадр приходит на шлюз, а IPv4 назначения указывает на сервер. Шлюз пересылает IP-пакет дальше с новым канальным заголовком на следующем Ethernet-участке.",
+    labels: { a: "Отправляет кадр", switch: "Пересылает", [node]: "Получает кадр" }
+  });
+  return steps;
+}
+
+function resetSequence(message) {
+  index = 0;
+  steps = buildSteps(scenarios[byId("target").value]);
+  byId("next").disabled = false;
+  byId("again").disabled = true;
+  byId("event").textContent = "Ожидание";
+  byId("packet-ip").textContent = "—";
+  byId("packet-mac").textContent = "—";
+  byId("arp-status").textContent = message;
+  byId("log").replaceChildren();
+  showNodes();
+  showCache();
+}
+
+byId("next").addEventListener("click", () => {
+  const step = steps[index++];
+  if (step.learn) cache.set(...step.learn);
+  byId("event").textContent = step.title;
+  byId("packet-ip").textContent = step.ip;
+  byId("packet-mac").textContent = step.mac || "—";
+  byId("arp-status").textContent = step.note;
+  const entry = document.createElement("li");
+  entry.textContent = step.title;
+  byId("log").append(entry);
+  showNodes(step.labels);
+  showCache();
+  const finished = index === steps.length;
+  byId("next").disabled = finished;
+  byId("again").disabled = !finished;
+  if (finished) byId("again").focus();
+});
+
+byId("target").addEventListener("change", () => resetSequence("Получатель изменён. Начните с выбора следующего узла."));
+byId("again").addEventListener("click", () => {
+  resetSequence("Новая отправка. Посмотрите, как ПК использует текущий кэш.");
+  byId("next").focus();
+});
+byId("clear").addEventListener("click", () => {
+  cache.clear();
+  resetSequence("Кэш очищен. При следующей отправке компьютер выполнит ARP-запрос.");
+});
+resetSequence("Начните с определения следующего узла.");
+
+const services = {
+  https: { name: "HTTPS", port: 443, protocol: "TCP" },
+  dns: { name: "DNS", port: 53, protocol: "UDP" },
+  ssh: { name: "SSH", port: 22, protocol: "TCP" }
+};
+let replying = false;
+function showService() {
+  const service = services[byId("service").value];
+  const client = "192.168.113.10:53124";
+  const server = "203.0.113.10:" + service.port;
+  byId("from").textContent = replying ? server : client;
+  byId("to").textContent = replying ? client : server;
+  byId("protocol").textContent = service.protocol;
+  byId("reply").setAttribute("aria-pressed", String(replying));
+  byId("reply").textContent = replying ? "Показать запрос" : "Показать ответ";
+  byId("service-note").textContent = replying
+    ? "Ответ службы " + service.name + " адресован клиентскому порту 53124."
+    : "Запрос идёт на порт " + service.port + " службы " + service.name + ".";
+}
+byId("service").addEventListener("change", showService);
+byId("reply").addEventListener("click", () => {
+  replying = !replying;
+  showService();
+});
+showService();
+
+const quiz = byId("quiz-form");
+const questions = [...quiz.querySelectorAll("fieldset")];
+quiz.addEventListener("submit", (event) => {
+  event.preventDefault();
+  let correct = 0;
+  let answered = 0;
+  for (const question of questions) {
+    const choice = question.querySelector("input:checked");
+    const feedback = question.querySelector(".feedback");
+    const valid = choice?.value === question.dataset.answer;
+    if (choice) answered++;
+    if (valid) correct++;
+    feedback.classList.toggle("error", !valid);
+    feedback.textContent = choice
+      ? (valid ? "Верно. " : "Попробуйте ещё раз. ") + question.dataset.explain
+      : "Выберите вариант ответа.";
+  }
+  byId("score").textContent = "Верных ответов: " + correct + " из " + questions.length + ". Отвечено: " + answered + ".";
+});
+quiz.addEventListener("reset", () => {
+  for (const question of questions) question.querySelector(".feedback").textContent = "";
+  byId("score").textContent = "";
+});
+</script>
+</body>
+</html>
